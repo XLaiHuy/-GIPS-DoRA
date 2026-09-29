@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "paper-human-v1.0/sentence",
+  "title": "Canonical sentence",
+  "type": "object",
+  "required": ["sentence_id", "document_id", "source_file_id", "paragraph_id", "ordinal", "page_index", "document_char_start", "document_char_end", "text", "text_sha256", "label"],
+  "properties": {
+    "sentence_id": {"type": "string", "minLength": 1},
+    "document_id": {"type": "string", "minLength": 1},
+    "source_file_id": {"type": "string", "minLength": 1},
+    "paragraph_id": {"type": "string", "minLength": 1},
+    "ordinal": {"type": "integer", "minimum": 0},
+    "page_index": {"type": "integer", "minimum": 0},
+    "document_char_start": {"type": "integer", "minimum": 0},
+    "document_char_end": {"type": "integer", "minimum": 1},
+    "text": {"type": "string", "minLength": 1},
+    "text_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "label": {"const": "H"}
+  },
+  "additionalProperties": true
+}

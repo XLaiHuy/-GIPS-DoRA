@@ -1,0 +1,24 @@
+{
+  "total_input_passages": 34158,
+  "eligible_gips_passages": 21024,
+  "filtered_short_passages": 13134,
+  "filtered_non_body_passages": 645,
+  "raw_sentences_in_eligible": 170583,
+  "merged_sentences_in_eligible": 162555,
+  "raw_lowercase_sentences": 4768,
+  "merged_lowercase_sentences": 901,
+  "topic_counts": {
+    "software_engineering": 9007,
+    "artificial_intelligence": 3675,
+    "information_systems": 3343,
+    "networking": 4018,
+    "cybersecurity": 981
+  },
+  "token_distribution": {
+    "<64": 11941,
+    "64-127": 6068,
+    "128-255": 6584,
+    "256-512": 9565,
+    ">512": 0
+  }
+}

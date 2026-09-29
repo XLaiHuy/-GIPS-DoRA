@@ -1,0 +1,41 @@
+{
+  "dataset_release": "human_written_dataset_v2_16_paper",
+  "schema_version": "paper-human-v1.0",
+  "pipeline_version": "2.16.0",
+  "created_utc": "2026-09-27T07:37:30.984621+00:00",
+  "source_release": "D:\\Documents\\NCKH- Đồ án\\NCKH về NLP, VLM, Vision\\human_written_dataset_v2_15",
+  "lineage_release": "D:\\Documents\\NCKH- Đồ án\\NCKH về NLP, VLM, Vision\\human_written_dataset_v1_4",
+  "task": "sentence-level H/P/G detection; this release contains Human (H) references only",
+  "human_cutoff_year_inclusive": 2022,
+  "counts": {
+    "audited_source_files": 427,
+    "unique_source_documents": 427,
+    "crawler_records": 441,
+    "crawler_records_with_local_pdf": 406,
+    "crawler_metadata_only": 35,
+    "crawler_pdf_missing_from_local": 0,
+    "unmatched_local_pdf_files": 21,
+    "documents": 387,
+    "excluded_documents": 40,
+    "source_bytes": 1773359281,
+    "source_pages": 38165,
+    "metadata_repository_matches": 406,
+    "sentences": 200603,
+    "paragraphs": 147035,
+    "passages": 34158,
+    "passages_train": 24403,
+    "passages_dev": 5114,
+    "passages_test": 4641
+  },
+  "traceability_chain": [
+    "source_file_id",
+    "document_id",
+    "paragraph_id",
+    "sentence_id",
+    "passage_id",
+    "split"
+  ],
+  "crawler_master_sha256": "d011bff12c4867328704de697d4aa7ed3152ce9ad2a435de7c1994cd414aebd3",
+  "model_input_policy": "Use passage.text only; metadata is for audit/grouping/stratification",
+  "redistribution_status": "research_internal_pending_rights_review"
+}

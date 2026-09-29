@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Human corpus sentence record v2.7",
+  "type": "object",
+  "required": ["schema_version", "sentence_id", "document_id", "group_id", "paragraph_id", "parent_sentence_id", "section_id", "ordinal", "char_start", "char_end", "split", "label", "text"],
+  "properties": {
+    "schema_version": {"const": "human-training-v2.7"},
+    "sentence_id": {"type": "string", "pattern": "^sent2_"},
+    "document_id": {"type": "string", "pattern": "^doc_"},
+    "group_id": {"type": "string", "minLength": 1},
+    "paragraph_id": {"type": "string", "minLength": 1},
+    "parent_sentence_id": {"type": "string", "pattern": "^parentsent2_"},
+    "fragment_index": {"type": "integer", "minimum": 0},
+    "fragment_count": {"type": "integer", "minimum": 1},
+    "is_fragment": {"type": "boolean"},
+    "unit_type": {"enum": ["paragraph", "bullet_item", "heading", "caption", "table", "list_item"]},
+    "normalization_status": {"enum": ["active", "review_required"]},
+    "review_flags": {"type": "array", "items": {"type": "string"}},
+    "page_start": {"type": "integer", "minimum": 0},
+    "page_end": {"type": "integer", "minimum": 0},
+    "source_spans": {"type": "array", "items": {"type": "object", "required": ["page_index", "source_start", "source_end"], "properties": {"page_index": {"type": "integer", "minimum": 0}, "source_start": {"type": "integer", "minimum": 0}, "source_end": {"type": "integer", "minimum": 0}, "text": {"type": "string"}}}},
+    "duplicate_of": {"type": ["string", "null"]},
+    "approx_tokens": {"type": "integer", "minimum": 1},
+    "content_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "split": {"enum": ["train", "dev", "test", "excluded"]},
+    "label": {"enum": ["H", "P", "G"]},
+    "char_start": {"type": "integer", "minimum": 0},
+    "char_end": {"type": "integer", "minimum": 1},
+    "text": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": true
+}

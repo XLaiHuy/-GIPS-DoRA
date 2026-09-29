@@ -1,0 +1,12 @@
+{
+  "_huong_dan": "Bạn có thể điền thông tin đăng nhập thư viện ĐH Mở TP.HCM (thuvien.ou.edu.vn) theo 1 trong 2 cách dưới đây:",
+  "cach_1_cookie_trinh_duyet": {
+    "_mo_ta": "Khuyên dùng cho tài khoản HCMCOU-SSO (Sinh viên chính quy / Giảng viên). Đăng nhập trên web rồi copy cookie dán vào đây.",
+    "cookie": "XSRF-TOKEN=...; ReaderCookie=...; OUToken=..."
+  },
+  "cach_2_tai_khoan_truc_tiep": {
+    "_mo_ta": "Dành cho Nghiên cứu sinh / Học viên Cao học / Hệ không chính quy có User & Pass độc giả thư viện.",
+    "username": "",
+    "password": ""
+  }
+}

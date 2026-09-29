@@ -1,0 +1,76 @@
+# ==========================================
+# 1. Bảo mật & Secrets (Tuyệt đối không push)
+# ==========================================
+.env
+.env.*
+!.env.example
+*auth.json
+!*auth.example.json
+ou_auth.json
+library_auth.json
+
+# ==========================================
+# 2. Python & Môi trường ảo (Virtual Environments)
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+pipeline_tien_xu_ly/
+
+# ==========================================
+# 3. File tạm, Scratch & IDE
+# ==========================================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+Desktop.ini
+tmp/
+scratch/
+.superpowers/
+*.log
+pipeline_tien_xu_ly/pipeline.log
+
+# ==========================================
+# 4. Thư mục lưu trữ bản build cũ (15+ GB)
+# ==========================================
+archive_builds/
+human_written_dataset_smoke*/
+human_written_dataset_v1*/
+human_written_dataset_v2/
+human_written_dataset_v2_*/
+!human_written_dataset_v2_16_paper/
+
+# ==========================================
+# 5. Dữ liệu thô PDF & Bài báo tham khảo (Tránh phình repo)
+# ==========================================
+Dataset_khoaluan/
+references/
+*.pdf
+*.PDF
+*.docx
+
+# ==========================================
+# 6. Dữ liệu Human v2.16 - Chặn các file > 100MB (Tránh lỗi GitHub GH001 khi không dùng Git LFS)
+# ==========================================
+human_written_dataset_v2_16_paper/lineage/
+human_written_dataset_v2_16_paper/sentences.jsonl
+human_written_dataset_v2_16_paper/paragraphs.jsonl
+human_written_dataset_v2_16_paper/passages/all.jsonl
+human_written_dataset_v2_16_paper/splits/
+
+# (Mẹo: Nếu bạn muốn push cả các file trên bằng Git LFS, hãy cài git-lfs và comment 5 dòng trên lại)
+# Các dữ liệu Human tinh tuyển (Curated) và AI Counterfactual dưới 100MB vẫn được push đầy đủ:
+# - human_written_dataset_v2_16_paper/documents.jsonl (29MB)
+# - human_written_dataset_v2_16_paper/gips_curated/ (Toàn bộ < 85MB)
+# - ai_counterfactual_dataset_v1/ (~4MB)
+

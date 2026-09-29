@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Human corpus document record v2.7",
+  "type": "object",
+  "required": [
+    "schema_version", "document_id", "group_id", "source_path", "source_sha256",
+    "title", "authors", "advisors", "year", "institution_id", "institution_name",
+    "metadata_status", "metadata_missing_required", "metadata_missing_optional",
+    "document_type_id", "domain_id", "language_detected",
+    "language", "label", "provenance_status", "quality_tier", "split",
+    "training_eligible", "core_human_eligible", "clean_character_count", "text"
+  ],
+  "properties": {
+    "schema_version": {"const": "human-training-v2.7"},
+    "document_id": {"type": "string", "pattern": "^doc_"},
+    "group_id": {"type": "string", "minLength": 1},
+    "source_path": {"type": "string", "minLength": 1},
+    "source_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "source_pdf_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "source_file_id": {"type": "string"},
+    "source_record_id": {"type": ["string", "null"]},
+    "status": {"enum": ["active", "excluded"]},
+    "exclusion_reason": {"type": ["string", "null"]},
+    "duplicate_of": {"type": ["string", "null"]},
+    "duplicate_method": {"type": ["string", "null"]},
+    "raw_pages": {"type": "array", "items": {"type": "object", "required": ["page_index", "raw_sha256"], "properties": {"page_index": {"type": "integer", "minimum": 0}, "raw_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}}},
+    "title": {"type": "string"},
+    "authors": {"type": "array", "items": {"type": "string"}},
+    "advisors": {"type": "array", "items": {"type": "string"}},
+    "year": {"type": ["integer", "null"]},
+    "institution_id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+    "institution_name": {"type": "string", "minLength": 3},
+    "metadata_status": {"enum": ["complete", "optional_missing", "blocking_missing"]},
+    "metadata_missing_required": {"type": "array", "items": {"type": "string"}},
+    "metadata_missing_optional": {"type": "array", "items": {"type": "string"}},
+    "document_type_id": {"enum": ["bachelor_thesis", "capstone_project", "master_thesis", "doctoral_dissertation", "research_report", "internship_report", "other"]},
+    "domain_id": {"type": "string", "minLength": 2},
+    "language_detected": {"enum": ["vi", "en", "mixed"]},
+    "language": {"enum": ["vi", "en", "mixed"]},
+    "label": {"const": "H"},
+    "provenance_status": {"enum": ["high_confidence_human", "transitional_2022", "recent_provenance_uncertain", "unknown_year"]},
+    "quality_tier": {"enum": ["gold", "silver", "quarantine"]},
+    "split": {"enum": ["train", "dev", "test", "excluded"]},
+    "training_eligible": {"type": "boolean"},
+    "core_human_eligible": {"type": "boolean"},
+    "clean_character_count": {"type": "integer", "minimum": 0},
+    "text": {"type": "string"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"training_eligible": {"const": true}}, "required": ["training_eligible"]},
+      "then": {
+        "properties": {
+          "title": {"minLength": 5},
+          "authors": {"minItems": 1},
+          "year": {"type": "integer", "minimum": 1980, "maximum": 2026},
+          "institution_id": {"minLength": 2},
+          "institution_name": {"minLength": 3},
+          "quality_tier": {"enum": ["gold", "silver"]},
+          "split": {"enum": ["train", "dev", "test"]},
+          "clean_character_count": {"minimum": 5000},
+          "text": {"minLength": 5000},
+          "metadata_missing_required": {"maxItems": 0}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"core_human_eligible": {"const": true}}, "required": ["core_human_eligible"]},
+      "then": {"properties": {"training_eligible": {"const": true}, "provenance_status": {"const": "high_confidence_human"}}}
+    }
+  ],
+  "additionalProperties": true
+}

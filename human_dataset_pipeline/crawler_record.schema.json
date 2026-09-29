@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local/gips-dora/crawler-record.schema.json",
+  "title": "Vietnamese thesis crawler record",
+  "type": "object",
+  "required": [
+    "id",
+    "institution_id",
+    "institution_name",
+    "source",
+    "title",
+    "authors",
+    "advisors",
+    "year",
+    "url"
+  ],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*_[^_]+$"},
+    "institution_id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+    "institution_name": {"type": "string", "minLength": 3},
+    "source": {"type": "string", "minLength": 3},
+    "title": {"type": "string", "minLength": 5},
+    "authors": {"type": "array", "items": {"type": "string", "minLength": 2}},
+    "advisors": {"type": "array", "items": {"type": "string", "minLength": 2}},
+    "year": {"type": ["integer", "null"], "minimum": 1980, "maximum": 2026},
+    "degree": {"type": ["string", "null"]},
+    "school_or_faculty": {"type": ["string", "null"]},
+    "keywords": {"type": "array", "items": {"type": "string"}},
+    "abstract": {"type": "string"},
+    "url": {"type": "string", "minLength": 1},
+    "has_full_pdf": {"type": "boolean"},
+    "pdf_path": {"type": ["string", "null"]},
+    "pdf_download_url": {"type": ["string", "null"]},
+    "pdf_size_bytes": {"type": ["integer", "null"], "minimum": 0},
+    "crawl_time": {"type": "string", "format": "date-time"}
+  },
+  "additionalProperties": true
+}

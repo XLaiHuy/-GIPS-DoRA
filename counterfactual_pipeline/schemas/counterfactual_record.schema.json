@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CounterfactualRecord",
+  "description": "Schema for a single counterfactual sample (H, P, or G)",
+  "type": "object",
+  "required": [
+    "record_id",
+    "source_passage_id",
+    "source_document_id",
+    "split",
+    "label_type",
+    "label_id",
+    "intervention_type",
+    "generator_family",
+    "model_name",
+    "approx_tokens",
+    "sentence_count",
+    "text",
+    "sentences"
+  ],
+  "properties": {
+    "record_id": {
+      "type": "string"
+    },
+    "source_passage_id": {
+      "type": "string"
+    },
+    "source_document_id": {
+      "type": "string"
+    },
+    "split": {
+      "type": "string",
+      "enum": ["train", "dev", "test"]
+    },
+    "topic_cluster": {
+      "type": "string"
+    },
+    "label_type": {
+      "type": "string",
+      "enum": ["H", "P", "G"]
+    },
+    "label_id": {
+      "type": "integer",
+      "enum": [0, 1, 2],
+      "description": "0 for H, 1 for P, 2 for G"
+    },
+    "intervention_type": {
+      "type": "string",
+      "enum": ["original", "p_light", "p_medium", "p_heavy", "g_independent"]
+    },
+    "generator_family": {
+      "type": "string"
+    },
+    "model_name": {
+      "type": "string"
+    },
+    "generation_parameters": {
+      "type": "object"
+    },
+    "prompt_hash": {
+      "type": ["string", "null"]
+    },
+    "approx_tokens": {
+      "type": "integer"
+    },
+    "sentence_count": {
+      "type": "integer"
+    },
+    "text": {
+      "type": "string"
+    },
+    "sentences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["sentence_id", "ordinal", "text", "approx_tokens", "label_id"],
+        "properties": {
+          "sentence_id": { "type": "string" },
+          "ordinal": { "type": "integer" },
+          "text": { "type": "string" },
+          "approx_tokens": { "type": "integer" },
+          "label_id": { "type": "integer" }
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}

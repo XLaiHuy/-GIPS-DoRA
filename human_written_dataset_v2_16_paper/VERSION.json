@@ -1,0 +1,5 @@
+{
+  "dataset_release": "human_written_dataset_v2_16_paper",
+  "schema_version": "paper-human-v1.0",
+  "pipeline_version": "2.16.0"
+}

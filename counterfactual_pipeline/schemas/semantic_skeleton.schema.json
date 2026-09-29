@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SemanticSkeleton",
+  "description": "Schema for extracted semantic skeleton used for independent AI generation (G)",
+  "type": "object",
+  "required": [
+    "source_passage_id",
+    "source_document_id",
+    "topic_cluster",
+    "target_length_bucket",
+    "key_entities",
+    "core_assertions",
+    "numeric_constraints"
+  ],
+  "properties": {
+    "source_passage_id": {
+      "type": "string",
+      "description": "Unique identifier of the parent human passage"
+    },
+    "source_document_id": {
+      "type": "string",
+      "description": "Identifier of the source thesis"
+    },
+    "thesis_title": {
+      "type": ["string", "null"],
+      "description": "Title of the thesis document"
+    },
+    "section_heading": {
+      "type": ["string", "null"],
+      "description": "Section heading if available"
+    },
+    "topic_cluster": {
+      "type": "string",
+      "description": "Canonical CS topic cluster (e.g. software_engineering, artificial_intelligence)"
+    },
+    "target_length_bucket": {
+      "type": "string",
+      "enum": ["64-127", "128-255", "256-512", ">512"]
+    },
+    "target_tokens": {
+      "type": "integer",
+      "minimum": 32
+    },
+    "target_sentences": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "key_entities": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Key technical terms, algorithms, frameworks, and domain concepts"
+    },
+    "core_assertions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Key technical facts, claims, or functionalities described"
+    },
+    "numeric_constraints": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Numeric values, version numbers, benchmarks, percentages"
+    },
+    "extractor_version": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

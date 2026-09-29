@@ -1,0 +1,78 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HybridSequenceRecord",
+  "description": "Schema for hybrid mixed-provenance sequence (H/P/G) used for CRF sequence labeling",
+  "type": "object",
+  "required": [
+    "sequence_id",
+    "source_document_id",
+    "split",
+    "topic_cluster",
+    "total_sentences",
+    "total_tokens",
+    "sentence_labels",
+    "label_sequence_str",
+    "r_G",
+    "r_AI_assisted",
+    "text",
+    "sentences"
+  ],
+  "properties": {
+    "sequence_id": {
+      "type": "string"
+    },
+    "source_document_id": {
+      "type": "string"
+    },
+    "split": {
+      "type": "string",
+      "enum": ["train", "dev", "test"]
+    },
+    "topic_cluster": {
+      "type": "string"
+    },
+    "total_sentences": {
+      "type": "integer"
+    },
+    "total_tokens": {
+      "type": "integer"
+    },
+    "sentence_labels": {
+      "type": "array",
+      "items": { "type": "integer", "enum": [0, 1, 2] }
+    },
+    "label_sequence_str": {
+      "type": "string",
+      "description": "Readable label string e.g. H H H | P P | G G"
+    },
+    "r_G": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "r_AI_assisted": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "text": {
+      "type": "string"
+    },
+    "sentences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["sentence_id", "ordinal", "text", "label_id", "source_type"],
+        "properties": {
+          "sentence_id": { "type": "string" },
+          "ordinal": { "type": "integer" },
+          "text": { "type": "string" },
+          "label_id": { "type": "integer" },
+          "source_type": { "type": "string", "enum": ["H", "P", "G"] },
+          "parent_record_id": { "type": "string" }
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}
