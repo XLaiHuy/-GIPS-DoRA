@@ -1,0 +1,12 @@
+{
+  "reviewed_at": "2026-10-07",
+  "method": "Visual reading of page 1 PDF cover, matched against catalog year and immutable PDF SHA-256",
+  "decisions": [
+    {"document_id": "doc3_115517293f33da1002dfadcf", "pdf_sha256": "17b9393fbdb98222158ae03dbc0e628b54b1db3aad1d41b237409e0a233afd01", "cover_year": 2019, "decision": "approve_year"},
+    {"document_id": "doc3_191c953772a423a0904d567d", "pdf_sha256": "302f24f1bf1ca6e52b82821b237e0cca51e6a84cfc334a38401a9df93175413f", "cover_year": 2012, "decision": "approve_year"},
+    {"document_id": "doc3_93d67e1fdbc44c32ec040a2b", "pdf_sha256": "1c24c6850998f65ceab246a6caf028bea4924fa97b63a8e985f4b80eed1c739c", "cover_year": 2009, "decision": "hold_year_mismatch"},
+    {"document_id": "doc3_b7c6e16984cca353c2ee2f49", "pdf_sha256": "b47bd012e27e99b8e0ca2c51f848df4254dafd5f59c4b3566df7327eea276cb6", "cover_year": 2020, "decision": "approve_year"},
+    {"document_id": "doc3_e3e9958d2737193585a9e0c4", "pdf_sha256": "6701143c08217d56321a71c20682e0e01723a5e481963a23b9a0ad92254eb939", "cover_year": 2020, "decision": "approve_year"},
+    {"document_id": "doc3_ffc3ab10e4bea28a52e9bb0a", "pdf_sha256": "dd7ef0ac7bc212dfe02a601a498460d2ec50235b176c7f2d353410208bad3b66", "cover_year": 2014, "decision": "approve_year"}
+  ]
+}

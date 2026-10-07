@@ -49,7 +49,9 @@ def main():
                     paths.append("images/" + name)
                 cards.append({"chunk_id": item["chunk_id"], "document_id": did,
                               "source_family": item["source_family"], "split": item["split"],
-                              "year": item["year"], "page_type": item["page_type"],
+                              "year": item["year"], "year_band": item["year_band"],
+                              "document_type_id": item["document_type_id"],
+                              "page_type": item["page_type"],
                               "risk_flag": item["risk_flag"], "sample_weight": item["sample_weight"],
                               "source_path": item["source_path"],
                               "pages": ",".join(str(p + 1) for p in sorted(spans)),

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import random
 from collections import Counter, defaultdict
@@ -13,6 +14,35 @@ from human_v3.core import JsonlWriter, rows
 
 ROOT = Path(__file__).resolve().parents[1]
 SPLITS = ("train", "dev", "test")
+
+
+def year_band(value) -> str:
+    year = int(value or 0)
+    if year <= 0:
+        return "unknown"
+    if year <= 2009:
+        return "through_2009"
+    if year <= 2014:
+        return "2010_2014"
+    if year <= 2019:
+        return "2015_2019"
+    return "2020_2022"
+
+
+def source_family(document: dict) -> str:
+    return document.get("institution_id") or "unknown_institution"
+
+
+def population_digest(chunks: list[dict], documents: dict[str, dict]) -> str:
+    """Bind a review draw to the exact eligible rows, splits, text and PDFs."""
+    digest = hashlib.sha256()
+    for row in sorted(chunks, key=lambda item: item["chunk_id"]):
+        record = [row["chunk_id"], row["document_id"], row["split"],
+                  hashlib.sha256(row["text"].encode("utf-8")).hexdigest(),
+                  documents[row["document_id"]]["source_pdf_sha256"]]
+        digest.update(json.dumps(record, ensure_ascii=False, separators=(",", ":")).encode("utf-8"))
+        digest.update(b"\n")
+    return digest.hexdigest()
 
 
 def page_type(page) -> str:
@@ -80,13 +110,14 @@ def main():
             risk = bool(set(chunk.get("review_reasons", [])) & {
                 "computing_scope_requires_review", "body_boundaries_require_review",
                 "language_requires_review", "source_evidence_requires_review"})
-            origin = ("hpu" if documents[did].get("institution_id") == "hpu"
-                      or "hpu_source_pilot" in documents[did].get("source_path", "")
-                      else "core")
+            origin = source_family(documents[did])
             row = {"chunk_id": chunk["chunk_id"], "document_id": did,
                    "split": chunk["split"], "source_family": origin,
                    "institution_id": documents[did].get("institution_id"),
-                   "year": documents[did].get("year"), "page_type": layout,
+                   "year": documents[did].get("year"),
+                   "year_band": year_band(documents[did].get("year")),
+                   "document_type_id": documents[did].get("document_type_id"),
+                   "page_type": layout,
                    "risk_flag": risk, "source_path": documents[did]["source_path"],
                    "source_spans": chunk["source_spans"], "text": chunk["text"]}
             annotated.append(row)
@@ -94,7 +125,8 @@ def main():
             print(f"classified page types {number}/{len(by_doc)} documents", flush=True)
     strata = defaultdict(list)
     for row in annotated:
-        key = (row["source_family"], row["split"], row["page_type"], row["risk_flag"])
+        key = (row["source_family"], row["year_band"], row["split"],
+               row["page_type"], row["risk_flag"])
         strata[key].append(row)
     counts = allocate(strata, args.size)
     rng = random.Random(args.seed)
@@ -112,9 +144,19 @@ def main():
     with JsonlWriter(out / "sample.jsonl") as writer:
         for row in selected:
             writer.write(row)
-    core = [row for row in selected if row["source_family"] == "core"]
-    hpu = [row for row in selected if row["source_family"] == "hpu"]
-    crosscheck = rng.sample(core, min(20, len(core))) + rng.sample(hpu, min(20, len(hpu)))
+    by_source = defaultdict(list)
+    for row in selected:
+        by_source[row["source_family"]].append(row)
+    crosscheck = []
+    for family, members in sorted(by_source.items()):
+        quota = max(1, round(40 * len(members) / len(selected)))
+        crosscheck.extend(rng.sample(members, min(quota, len(members))))
+    if len(crosscheck) > 40:
+        crosscheck = rng.sample(crosscheck, 40)
+    elif len(crosscheck) < 40:
+        used = {row["chunk_id"] for row in crosscheck}
+        crosscheck.extend(rng.sample([row for row in selected if row["chunk_id"] not in used],
+                                     40 - len(crosscheck)))
     with JsonlWriter(out / "crosscheck_40.jsonl") as writer:
         for row in crosscheck:
             writer.write({"chunk_id": row["chunk_id"], "document_id": row["document_id"],
@@ -122,6 +164,7 @@ def main():
                           "decision": None, "reason": None, "reviewer": None})
     report = {"kind": args.kind, "sample_size": len(selected), "seed": args.seed,
               "population_chunks": len(annotated),
+              "population_sha256": population_digest(annotated, documents),
               "unique_documents": len({row["document_id"] for row in selected}),
               "crosscheck_size": len(crosscheck),
               "source_family": dict(Counter(row["source_family"] for row in selected)),
@@ -129,6 +172,8 @@ def main():
               "risk_flag": dict(Counter(str(row["risk_flag"]) for row in selected)),
               "split": dict(Counter(row["split"] for row in selected)),
               "year": dict(Counter(str(row["year"]) for row in selected)),
+              "year_band": dict(Counter(row["year_band"] for row in selected)),
+              "document_type_id": dict(Counter(row["document_type_id"] for row in selected)),
               "stratum_population": {str(key): len(members) for key, members in strata.items()},
               "stratum_sample": {str(key): counts[key] for key in strata}}
     (out / "sample_design.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
