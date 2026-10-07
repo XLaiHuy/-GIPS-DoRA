@@ -30,6 +30,10 @@ The pipeline rebuilt affected documents from PDFs, rather than editing individua
 
 The candidate still has 2,012 chunks with computing-scope flags and 931 with body-boundary flags. Other review-reason counts are: repository-placeholder institution 2,200; year conflict 316; language 195; incomplete body extraction 80; unresolved source evidence 16. These categories overlap. Treating all release-blocking flags as unresolved leaves 15,907 chunks without those flags, at least **4,093 below** the 20,000-ready target even before a final visual review. The 3,269 low-confidence heading-path warnings are tracked separately as advisory metadata, pending evaluation of downstream uses.
 
+This conservative subset is materialized as `human_v3_2_strict_candidate_v81_20261007`: 15,907 pass candidates from 619 documents (train 10,777; dev 2,270; test 2,860). All 4,113 flagged v80 pass candidates moved to quarantine, bringing total quarantine to 13,987. The v81 integrity replay matched 798 local PDF hashes and reported zero structural or split errors. The subset remains `candidate_not_ready` and below the target.
+
+The stricter subset is even more concentrated: HPU has 10,449 chunks (65.7%), OU HCMC 5,101 (32.1%), and VNU Hanoi 326 (2.0%). Expansion should prioritize additional universities and evaluate source-balanced performance, not simply add more HPU pages.
+
 The corrected 400-card pack is a **development** sample. It spans source family, split, page type, year and risk. It cannot be used as the post-repair final estimate. Its decisions are blank. A distinct reviewer for the 40-card crosscheck is not available, as confirmed by the dataset owner. No reviewer name, decision, agreement, or confidence interval has been invented.
 
 ## Remaining release sequence
@@ -39,4 +43,4 @@ The corrected 400-card pack is a **development** sample. It spans source family,
 3. Freeze rules, draw a new *final* 400-card PDF sample from that exact population, inspect all 400 against page images, obtain 40 independent human crosschecks, adjudicate disagreements, and calculate the document-cluster-aware lower confidence bound. Any systematic error requires a rule fix, rebuild, and new final sample.
 4. Release only if the gate reports `PASS`. Then pilot AI rewriting on about 200 train chunks, verify meaning and terminology, freeze the prompt, and preserve parent IDs and document splits for all AI outputs.
 
-Machine-readable gate status: `human_v3_2_provenance_candidate_v80_20261007/audit/release_gate_status.json`. Corrected review pack: `human_v3_2_provenance_candidate_v80_20261007/development_pdf_review_400_corrected/`. The older `development_pdf_review_400/` pack is explicitly marked invalid because its source-family stratification was wrong.
+Machine-readable gate statuses: `human_v3_2_provenance_candidate_v80_20261007/audit/release_gate_status.json` and `human_v3_2_strict_candidate_v81_20261007/audit/release_gate_status.json`. The v81 gate blocks on the quantity threshold and the absent final PDF review/crosscheck; its full layout audit also reports zero defined-pattern hits. Corrected development review pack: `human_v3_2_provenance_candidate_v80_20261007/development_pdf_review_400_corrected/`. The older `development_pdf_review_400/` pack is explicitly marked invalid because its source-family stratification was wrong.
