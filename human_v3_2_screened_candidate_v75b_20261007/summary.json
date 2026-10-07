@@ -1,0 +1,26 @@
+{
+  "source_release": "human_v3_2_ready_v73_20261007",
+  "status": "screened_candidate_not_ready",
+  "source_chunk_count": 22295,
+  "pass_candidate_chunk_count": 21773,
+  "quarantine_chunk_count": 522,
+  "pass_candidate_document_count": 828,
+  "split_pass_candidate_counts": {
+    "dev": 3245,
+    "test": 3339,
+    "train": 15189
+  },
+  "quarantine_reason_counts": {
+    "pdf_wrapped_list_continuation": 492,
+    "v74_text_review_reject": 30,
+    "v74_text_review_uncertain": 3
+  },
+  "pdf_open_errors": [],
+  "independent_pdf_visual_review_sample_count": 400,
+  "completed_visual_reviews_in_this_build": 0,
+  "known_limitations": [
+    "List geometry screen is high precision, not a complete prose/scope audit.",
+    "Text-review rejects and uncertain cases remain quarantined until PDF adjudication.",
+    "No 400-page visual attestation is implied by generating the review sample."
+  ]
+}
