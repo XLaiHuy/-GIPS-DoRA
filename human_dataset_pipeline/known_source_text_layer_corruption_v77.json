@@ -1,0 +1,23 @@
+{
+  "review_basis": "assistant_compared_candidate_text_with_rendered_pdf_page_2026-10-07",
+  "documents": [
+    {
+      "document_id": "doc3_f7b369c1a9e6070b8f1cb516",
+      "page_index": 31,
+      "failure": "visible Vietnamese letters omitted from extracted text, e.g. người became ng ời",
+      "decision": "quarantine_document_pending_source_level_ocr"
+    },
+    {
+      "document_id": "doc3_721498c6c155d6cee90d2741",
+      "page_index": 47,
+      "failure": "visible word spaces omitted from extracted text, e.g. từ trong became từtrong",
+      "decision": "quarantine_document_pending_glyph_geometry_rebuild"
+    },
+    {
+      "document_id": "doc3_46179cb4edf5f29af98fefc1",
+      "page_index": 44,
+      "failure": "visible word spaces omitted from extracted text, e.g. phổ biến became phổbiến",
+      "decision": "quarantine_document_pending_glyph_geometry_rebuild"
+    }
+  ]
+}

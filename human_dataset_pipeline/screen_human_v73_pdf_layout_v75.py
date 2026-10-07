@@ -53,6 +53,7 @@ def page_lines(page) -> list[dict]:
             result.append({"line_index": n, "text": value, "bbox": list(line["bbox"]),
                            "font_size": statistics.median(span["size"] for span in spans),
                            "bold": any(span.get("flags", 0) & 16 for span in spans),
+                           "fonts": sorted({span["font"] for span in spans}),
                            "source_start": n, "source_end": n + 1})
     return result
 

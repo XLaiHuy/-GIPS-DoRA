@@ -122,6 +122,13 @@ def read_pdf(path: Path, document_id: str, repair_visual_spacing: bool = False) 
                    "height": page.rect.height, "lines": [], "raw_text": "", "extraction_error": None}
             try:
                 out["layout_regions"], drawings = detect_visual_regions(page)
+                out["small_image_markers"] = [
+                    [float(value) for value in image["bbox"]]
+                    for image in page.get_image_info()
+                    if 3 <= image["bbox"][2] - image["bbox"][0] <= 26
+                    and 3 <= image["bbox"][3] - image["bbox"][1] <= 26
+                    and image["bbox"][0] < page.rect.width * .42
+                ]
                 mode = "rawdict" if repair_visual_spacing else "dict"
                 flags = (fitz.TEXTFLAGS_RAWDICT if repair_visual_spacing else fitz.TEXTFLAGS_DICT) & ~fitz.TEXT_PRESERVE_IMAGES
                 data = page.get_text(mode, flags=flags, sort=True)
@@ -454,6 +461,17 @@ def list_item_line_reason(line: dict, page: dict) -> str | None:
     if not text:
         return None
     left = text.lstrip()
+    box = line.get("bbox") or []
+    if len(box) == 4:
+        for marker in page.get("small_image_markers", []):
+            # Word/LaTeX bullets often appear as tiny embedded images with no
+            # extractable bullet character. Require a nearby text baseline at
+            # the marker's right edge; math images inside a line do not match.
+            vertical = max(0.0, min(box[3], marker[3]) - max(box[1], marker[1]))
+            if (vertical >= min(box[3] - box[1], marker[3] - marker[1]) * .55
+                    and marker[0] <= box[0] <= marker[2] + 18
+                    and marker[2] >= box[0] - 15):
+                return "image_marker_list_item"
     if any(left.startswith(marker) and len(left) > len(marker)
            and left[len(marker)].isspace() for marker in LIST_SYMBOLS):
         return "list_item"
@@ -469,7 +487,6 @@ def list_item_line_reason(line: dict, page: dict) -> str | None:
                 return "list_item"
         return None
 
-    box = line.get("bbox") or []
     if len(box) != 4:
         return None
     for other in page.get("lines", []):
@@ -536,6 +553,47 @@ def wrapped_list_lines(lines: list[dict], page: dict, median_font: float) -> set
             previous = line
         else:
             anchor = previous = None
+    return result
+
+
+def image_attached_caption_lines(page: dict, median_font: float) -> set[int]:
+    """Find unlabelled bold-italic captions immediately below a large image.
+
+    A thesis can omit the word 'Hình' and put a multi-line caption directly
+    against the screenshot edge. Require an embedded-image region and a strong
+    font/style/position combination so ordinary prose below an image is kept.
+    """
+    ordered = sorted(page.get("lines", []), key=lambda item: (item["bbox"][1], item["bbox"][0]))
+    images = [region["bbox"] for region in page.get("layout_regions", [])
+              if region.get("kind") == "figure"
+              and region.get("method") == "pymupdf_image_bbox"
+              and (region["bbox"][2] - region["bbox"][0]) >= page["width"] * .35
+              and (region["bbox"][3] - region["bbox"][1]) >= page["height"] * .10]
+    result: set[int] = set()
+    for image in images:
+        for index, first in enumerate(ordered):
+            box = first["bbox"]
+            italic = any("italic" in font.casefold() or "oblique" in font.casefold()
+                         for font in first.get("fonts", []))
+            if not (first.get("bold") and italic
+                    and 0 <= box[1] - image[3] <= max(12, median_font)
+                    and abs(box[0] - image[0]) <= 20
+                    and box[2] <= image[2] + 20):
+                continue
+            previous = first
+            for current in ordered[index:index + 6]:
+                current_box = current["bbox"]
+                similar_style = (current.get("bold")
+                                 and any("italic" in font.casefold() or "oblique" in font.casefold()
+                                         for font in current.get("fonts", [])))
+                gap = current_box[1] - previous["bbox"][3]
+                if (not similar_style or abs(current_box[0] - box[0]) > 6
+                        or current_box[2] > image[2] + 20
+                        or (current is not first and not 0 <= gap <= max(3, median_font * .5))):
+                    break
+                result.add(current["line_index"])
+                previous = current
+            break
     return result
 
 
@@ -746,10 +804,12 @@ def reconstruct(pages: list[dict], document_id: str, bounds: dict):
         process_lines.extend(line for line in source_lines if line["line_index"] not in consumed)
         process_lines.sort(key=lambda x: (round(x["bbox"][1], 1), x["bbox"][0], x["line_index"]))
         list_continuations = wrapped_list_lines(source_lines, page, median)
+        image_captions = image_attached_caption_lines(page, median)
         for line in process_lines:
             pos = (line["page_index"], line["line_index"])
             reason = ("outside_body" if not tuple(bounds["start"]) <= pos < tuple(bounds["end_exclusive"])
                       else "list_item_continuation" if line["line_index"] in list_continuations
+                      else "image_attached_caption" if line["line_index"] in image_captions
                       else line_reason(line, page, median, repeated))
             if reason:
                 # Headers/footers are outside the logical prose flow; paragraph
