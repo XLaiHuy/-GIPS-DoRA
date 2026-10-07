@@ -36,6 +36,10 @@ The stricter subset is even more concentrated: HPU has 10,449 chunks (65.7%), OU
 
 The corrected 400-card pack is a **development** sample. It spans source family, split, page type, year and risk. It cannot be used as the post-repair final estimate. Its decisions are blank. A distinct reviewer for the 40-card crosscheck is not available, as confirmed by the dataset owner. No reviewer name, decision, agreement, or confidence interval has been invented.
 
+## Supplemental-source pilot
+
+The official VNU DSpace API was queried for IT thesis metadata, excluding handles already in the corpus. An unrestricted pilot found 100 metadata leads; all 10 downloaded sample PDFs were only 11–17 pages, so none passed the conservative full-text threshold (at least 30 pages and 20,000 extracted characters). A second pilot restricted to 2021–2022 found 90 metadata leads, but zero of them exposed an ORIGINAL PDF bundle to the API. No VNU pilot file was ingested or counted. This result is specific to these search queries and samples; it does not prove that all VNU theses lack full text. Source availability and rights require document-specific evidence.
+
 ## Remaining release sequence
 
 1. Resolve source, scope, language, year and body-boundary flags at document/page/paragraph level; rebuild all affected chunks and rerun full-source integrity and layout audits. The cover triage found text evidence for 59 of 91 placeholder-institution documents, but this is not a complete institution verification and does not clear their flags.
