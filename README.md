@@ -1,5 +1,9 @@
 # 🎓 GIPS-DoRA: Vietnamese AI-Generated Text Detection & Sentence-Level Segmentation
 
+> **Current Human v3.2 owner-approved ready release (2026-10-07):** [22,295 chunks from 830 documents](human_v3_2_ready_v73_20261007/), with train/dev/test JSONL and 263 known rejects kept in quarantine. Read its [dataset card](human_v3_2_ready_v73_20261007/DATASET_CARD.md) for the unverified visual-review and rights-metadata limits.
+
+> **Historical Human v3.1 candidate:** the earlier PDF-based pipeline rebuilt 432 source documents into hierarchical passages and t128/t192/t256 chunk streams. Full structural and PDF-replay validation passed with 0 errors, but that v3.1 corpus was **not ready for training**: an independent [publication-readiness audit](human_v3_publication_audit/REPORT.md) found unresolved domain, short-window, bullet, encoding and heading-quality issues; its ready exports are empty. Its output is `human_written_dataset_v3_1_hierarchical/`. See [Human v3.1 instructions](human_dataset_pipeline/HUMAN_V3.md) and the [implementation report](docs/human_v3_implementation_report.md).
+
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Dataset Release](https://img.shields.io/badge/Dataset-v2.16%20Curated-success.svg)](human_written_dataset_v2_16_paper/)
 [![Counterfactuals](https://img.shields.io/badge/AI%20Counterfactuals-v1.0-orange.svg)](ai_counterfactual_dataset_v1/)

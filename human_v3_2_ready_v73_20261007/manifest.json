@@ -1,0 +1,34 @@
+{
+  "release_id": "human_v3_2_ready_v73_20261007",
+  "release_date": "2026-10-07",
+  "status": "ready",
+  "readiness_basis": "explicit_dataset_owner_decision_after_v72_screening",
+  "claim_scope": "owner_approved_training_testing_dataset_not_formally_visual_attested",
+  "label": "H",
+  "chunk_count": 22295,
+  "document_count": 830,
+  "split_chunk_counts": {
+    "train": 15601,
+    "dev": 3292,
+    "test": 3402
+  },
+  "rights_status_chunk_counts": {
+    "None": 10933,
+    "pending_review": 105,
+    "internal_research_cleared": 11257
+  },
+  "quarantine_chunk_count": 263,
+  "quarantine_reasons": {
+    "review_rejects": 158,
+    "additional_text_risk_rejects": 105
+  },
+  "formal_pdf_visual_attestations": 0,
+  "source_pdf_hashes_previously_checked": 835,
+  "cross_split_document_group_fingerprint_sentence_leakage": 0,
+  "known_limitations": [
+    "579 review cards were text-screened, with no formal PDF visual attestation",
+    "rights status/evidence remains missing or pending for 322 included documents and 11038 chunks",
+    "the extraction rules were not rebuilt after detected sample defects",
+    "complete lineage, scope, and near-duplicate release review remains open"
+  ]
+}

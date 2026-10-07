@@ -1,0 +1,49 @@
+{
+  "source_candidate_chunks": 22558,
+  "source_candidate_documents": 835,
+  "source_split_chunks": {
+    "train": 15791,
+    "dev": 3330,
+    "test": 3437
+  },
+  "sample_rejected_rows_quarantined": 158,
+  "screened_candidate_chunks": 22295,
+  "screened_candidate_documents": 830,
+  "screened_split_chunks": {
+    "train": 15601,
+    "dev": 3292,
+    "test": 3402
+  },
+  "remaining_screen_risk_rows": 0,
+  "source_rights_chunk_counts": {
+    "None": 11090,
+    "pending_review": 106,
+    "internal_research_cleared": 11362
+  },
+  "screened_document_rights_status": {
+    "internal_research_cleared": 508,
+    "None": 294,
+    "pending_review": 28
+  },
+  "source_pdf_hashes_checked": 835,
+  "source_pdf_errors": [],
+  "structural_errors": [],
+  "structural_error_count": 0,
+  "formal_human_sample_attestations": 0,
+  "ready_chunks": 0,
+  "release_gate": "HOLD",
+  "blockers": [
+    "formal PDF visual-review attestations remain pending",
+    "source extraction and scope rules still require rebuild and stratified resampling after found defects",
+    "document rights evidence/status remains incomplete",
+    "retained candidates still need complete lineage, content/scope and near-duplicate release audit"
+  ],
+  "known_sample_rejects": 158,
+  "additional_text_risk_rejects": 105,
+  "risk_false_positives_retained": 14,
+  "screened_rights_chunk_counts": {
+    "None": 10933,
+    "pending_review": 105,
+    "internal_research_cleared": 11257
+  }
+}
