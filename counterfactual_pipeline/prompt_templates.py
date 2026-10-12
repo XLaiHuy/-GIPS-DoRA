@@ -11,6 +11,9 @@ import hashlib
 from typing import Dict, Any, Tuple
 
 
+PROMPT_TEMPLATE_VERSION = "counterfactual-v2.0"
+
+
 SYSTEM_PROMPT_POLISH = (
     "Bạn là một chuyên gia hiệu đính và biên tập văn bản khoa học tiếng Việt chuyên sâu "
     "trong lĩnh vực Khoa học Máy tính và Công nghệ Thông tin. Nhiệm vụ của bạn là hiệu đính "

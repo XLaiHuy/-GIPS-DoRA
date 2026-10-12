@@ -15,6 +15,7 @@ from typing import List, Dict, Any, Optional
 
 LABEL_MAP = {"H": 0, "P": 1, "G": 2}
 LABEL_INV = {0: "H", 1: "P", 2: "G"}
+TERMINAL_PUNCTUATION = set(".!?;:")
 
 
 class HybridSequenceSynthesizer:
@@ -31,7 +32,12 @@ class HybridSequenceSynthesizer:
         topic_cluster: str,
         mode: str = "realistic_transition"
     ) -> Optional[Dict[str, Any]]:
-        """Synthesize a hybrid passage with sentence-level ground truth labels."""
+        """Synthesize a hybrid passage with sentence-level ground truth labels.
+
+        ``realistic_transition`` creates an aligned H-P-H sequence and rejects
+        malformed boundaries. ``random_aux`` preserves the old random splice as
+        a secondary stress test; it must not be used as the primary train view.
+        """
         if not h_sentences or (not p_sentences and not g_sentences):
             return None
 
@@ -41,31 +47,37 @@ class HybridSequenceSynthesizer:
         g_pool = [dict(s, source_type="G", label_id=2) for s in g_sentences] if g_sentences else []
 
         spliced_sentences = []
-
-        # Recipe 1: H intro -> P edit -> H closing
-        # Recipe 2: H intro -> G generation -> P closing
-        # Recipe 3: P intro -> G continuation
-        # Recipe 4: Mixed spans (2 to 4 sentences each)
-        recipe = self.rng.choice(["h_p_h", "h_g_h", "h_p_g", "mixed_span"])
-
-        if recipe == "h_p_h" and p_pool and len(h_pool) >= 3:
-            spliced_sentences.extend(h_pool[:len(h_pool)//3])
-            spliced_sentences.extend(p_pool[:max(1, len(p_pool)//2)])
-            spliced_sentences.extend(h_pool[len(h_pool)//3:])
-        elif recipe == "h_g_h" and g_pool and len(h_pool) >= 2:
-            spliced_sentences.extend(h_pool[:max(1, len(h_pool)//2)])
-            spliced_sentences.extend(g_pool[:max(1, len(g_pool)//2)])
-            spliced_sentences.extend(h_pool[max(1, len(h_pool)//2):])
-        elif recipe == "h_p_g" and p_pool and g_pool:
-            spliced_sentences.extend(h_pool[:max(1, len(h_pool)//3)])
-            spliced_sentences.extend(p_pool[:max(1, len(p_pool)//3)])
-            spliced_sentences.extend(g_pool[:max(1, len(g_pool)//2)])
-        else:
-            # Fallback to balanced interleaving
-            pools = [p for p in [h_pool, p_pool, g_pool] if p]
+        recipe = mode
+        if mode == "realistic_transition":
+            if len(h_pool) < 5 or len(p_pool) != len(h_pool):
+                return None
+            span = min(3, max(1, len(h_pool) // 4))
+            start = max(2, (len(h_pool) - span) // 2)
+            start = min(start, len(h_pool) - span - 2)
+            end = start + span
+            if start < 2 or len(h_pool) - end < 2:
+                return None
+            previous_h = str(h_pool[start - 1].get("text", "")).rstrip()
+            previous_p = str(p_pool[end - 1].get("text", "")).rstrip()
+            if not previous_h or previous_h[-1] not in TERMINAL_PUNCTUATION:
+                return None
+            if not previous_p or previous_p[-1] not in TERMINAL_PUNCTUATION:
+                return None
+            window_start = max(0, start - 4)
+            window_end = min(len(h_pool), end + 4)
+            spliced_sentences.extend(h_pool[window_start:start])
+            spliced_sentences.extend(p_pool[start:end])
+            spliced_sentences.extend(h_pool[end:window_end])
+            recipe = "h_context_contiguous_p_light_h_context"
+        elif mode == "random_aux":
+            pools = [pool for pool in (h_pool, p_pool, g_pool) if pool]
+            self.rng.shuffle(pools)
             for pool in pools:
                 take_n = min(len(pool), self.rng.randint(1, 3))
                 spliced_sentences.extend(pool[:take_n])
+            recipe = "random_auxiliary_stress_test"
+        else:
+            raise ValueError(f"Unsupported hybrid synthesis mode: {mode}")
 
         if not spliced_sentences:
             return None
@@ -130,5 +142,12 @@ class HybridSequenceSynthesizer:
             "r_G": r_G,
             "r_AI_assisted": r_ai,
             "text": full_text,
-            "sentences": final_sentences
+            "sentences": final_sentences,
+            "hybrid_recipe": recipe,
+            "hybrid_quality": {
+                "primary_training_view": mode == "realistic_transition",
+                "terminal_punctuation_at_transitions": mode == "realistic_transition",
+                "minimum_h_context_each_side": 2 if mode == "realistic_transition" else None,
+                "maximum_h_context_each_side": 4 if mode == "realistic_transition" else None,
+            },
         }

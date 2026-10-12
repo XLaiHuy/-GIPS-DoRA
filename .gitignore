@@ -20,6 +20,10 @@ __pycache__/
 env/
 venv/
 .venv/
+.venv-human-v3/
+.cache/human-v3/
+human_written_dataset_v3*/
+human_v3_review_bundle/
 ENV/
 pipeline_tien_xu_ly/
 

@@ -1,0 +1,158 @@
+{
+  "schema_version": "1.0",
+  "counting_units": {
+    "records": "one JSONL row; H is a source passage, P/G is one generated variant",
+    "sentences": "sum of sentence_count fields",
+    "approx_tokens": "sum of stored approximate token counts; not a model tokenizer count"
+  },
+  "all_hpg": {
+    "records": 22044,
+    "sentences": 168213,
+    "approx_tokens": 5033092,
+    "by_label": {
+      "G": 264,
+      "H": 20997,
+      "P": 783
+    },
+    "by_split": {
+      "dev": 2947,
+      "test": 2530,
+      "train": 16567
+    }
+  },
+  "by_label": {
+    "H": {
+      "records": 20997,
+      "sentences": 162369,
+      "approx_tokens": 4793896,
+      "by_label": {
+        "H": 20997
+      },
+      "by_split": {
+        "dev": 2943,
+        "test": 2526,
+        "train": 15528
+      }
+    },
+    "P": {
+      "records": 783,
+      "sentences": 4344,
+      "approx_tokens": 169011,
+      "by_label": {
+        "P": 783
+      },
+      "by_split": {
+        "dev": 3,
+        "test": 3,
+        "train": 777
+      }
+    },
+    "G": {
+      "records": 264,
+      "sentences": 1500,
+      "approx_tokens": 70185,
+      "by_label": {
+        "G": 264
+      },
+      "by_split": {
+        "dev": 1,
+        "test": 1,
+        "train": 262
+      }
+    }
+  },
+  "source_split_integrity": {
+    "human_parent_count": 20997,
+    "variant_count": 1047,
+    "missing_h_parent": 0,
+    "variant_split_mismatch": 0,
+    "variant_document_mismatch": 0,
+    "document_ids_in_multiple_splits": 0,
+    "source_passage_ids_in_multiple_splits": 0,
+    "examples": {
+      "missing_h_parent": [],
+      "variant_split_mismatch": [],
+      "variant_document_mismatch": [],
+      "cross_split_documents": [],
+      "cross_split_sources": []
+    }
+  },
+  "duplicates": {
+    "normalization": "casefolded word tokens",
+    "near_duplicate_method": "4-word shingle Jaccard with MinHash candidate retrieval",
+    "near_duplicate_threshold": 0.8,
+    "candidate_pairs_checked": 89474,
+    "exact_cross_split_groups": 0,
+    "near_duplicate_cross_split_pairs": 0,
+    "exact_examples": [],
+    "near_duplicate_examples": []
+  },
+  "generator_generalization": {
+    "generator_model_identities_by_split": {
+      "dev": [
+        "gemini::gemini-3.8-chat-session"
+      ],
+      "test": [
+        "gemini::gemini-3.8-chat-session"
+      ],
+      "train": [
+        "gemini::gemini-3.6-flash",
+        "gemini::gemini-3.8-chat-session",
+        "gemini::gemini-3.8-flash"
+      ]
+    },
+    "prompt_strategies_by_split": {
+      "dev": [
+        "g_independent",
+        "p_heavy",
+        "p_light",
+        "p_medium"
+      ],
+      "test": [
+        "g_independent",
+        "p_heavy",
+        "p_light",
+        "p_medium"
+      ],
+      "train": [
+        "g_independent",
+        "p_heavy",
+        "p_light",
+        "p_medium"
+      ]
+    },
+    "test_generator_models_seen_in_train": [
+      "gemini::gemini-3.8-chat-session"
+    ],
+    "test_generator_models_unseen_in_train": [],
+    "unseen_generator_test_ready": false
+  },
+  "hybrids": {
+    "available": true,
+    "records": 58,
+    "expected_recipe": "H context -> contiguous aligned P-light span -> H context",
+    "length_min": 5,
+    "length_max": 11,
+    "invalid_recipe_records": 0,
+    "invalid_transition_boundaries": 0,
+    "invalid_recipe_examples": [],
+    "invalid_boundary_examples": []
+  },
+  "hard_failures": {
+    "document_split_leakage": 0,
+    "source_split_leakage": 0,
+    "missing_h_parent": 0,
+    "variant_split_mismatch": 0,
+    "variant_document_mismatch": 0,
+    "exact_cross_split_duplicates": 0,
+    "near_cross_split_duplicates": 0,
+    "invalid_hybrid_recipes": 0,
+    "invalid_hybrid_boundaries": 0
+  },
+  "valid": true,
+  "limitations": [
+    "MinHash retrieves candidates before exact 4-gram Jaccard scoring; it is not a semantic duplicate model.",
+    "This audit cannot prove that test data was never consulted during earlier experiments; that requires experiment logs and governance.",
+    "An unseen-generator test is only ready when test contains a generator/model identity absent from train."
+  ]
+}

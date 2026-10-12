@@ -1,0 +1,43 @@
+{
+  "release_id": "human_v3_2_ready_v73_20261007",
+  "sample_seed": 20261007,
+  "design": "independent uniform-without-replacement sample of 60 chunks from each source group",
+  "population_by_origin": {
+    "core": 11038,
+    "hpu": 11257
+  },
+  "sample_size": 120,
+  "unique_sample_documents": 102,
+  "pdf_page_examples_rendered": 13,
+  "full_pdf_attestations": 0,
+  "decisions": {
+    "provisional_pass": 87,
+    "uncertain": 3,
+    "reject": 30
+  },
+  "decisions_by_origin": {
+    "core": {
+      "provisional_pass": 43,
+      "uncertain": 2,
+      "reject": 15
+    },
+    "hpu": {
+      "provisional_pass": 44,
+      "uncertain": 1,
+      "reject": 15
+    }
+  },
+  "text_screen_pass_rate_floor": 0.725,
+  "text_screen_pass_rate_if_uncertain_pass": 0.75,
+  "population_weighted_text_screen_pass_rate_floor": 0.7250818569185916,
+  "population_weighted_text_screen_pass_rate_if_uncertain_pass": 0.75,
+  "wilson_95_assuming_independent_text_labels_floor": [
+    0.6390703417242344,
+    0.7969710333873498
+  ],
+  "wilson_95_assuming_independent_text_labels_ceiling": [
+    0.6655886333587464,
+    0.8189017834319028
+  ],
+  "interpretation": "Exploratory text-screen estimate only. PDF/source fidelity and clustered/document errors are not fully measured; Wilson bounds exclude reviewer and source-cluster uncertainty."
+}

@@ -1,0 +1,82 @@
+[
+  {
+    "record_id": "cf_paperpassage_4ba7dbeb43fe89f78073_gemini38_p_light",
+    "old": "doc_e7a5059d4e564ca89e24",
+    "new": "doc_fab311fa85bfdb2e15ae"
+  },
+  {
+    "record_id": "cf_paperpassage_4ba7dbeb43fe89f78073_gemini38_p_medium",
+    "old": "doc_e7a5059d4e564ca89e24",
+    "new": "doc_fab311fa85bfdb2e15ae"
+  },
+  {
+    "record_id": "cf_paperpassage_4ba7dbeb43fe89f78073_gemini38_p_heavy",
+    "old": "doc_e7a5059d4e564ca89e24",
+    "new": "doc_fab311fa85bfdb2e15ae"
+  },
+  {
+    "record_id": "cf_paperpassage_4ba7dbeb43fe89f78073_gemini38_g_independent",
+    "old": "doc_e7a5059d4e564ca89e24",
+    "new": "doc_fab311fa85bfdb2e15ae"
+  },
+  {
+    "record_id": "cf_paperpassage_bb2a4742373c685ef189_gemini38_p_light",
+    "old": "doc_3160a0b25e7943ad9d44",
+    "new": "doc_b17ad7df7b3d824389be"
+  },
+  {
+    "record_id": "cf_paperpassage_bb2a4742373c685ef189_gemini38_p_medium",
+    "old": "doc_3160a0b25e7943ad9d44",
+    "new": "doc_b17ad7df7b3d824389be"
+  },
+  {
+    "record_id": "cf_paperpassage_bb2a4742373c685ef189_gemini38_p_heavy",
+    "old": "doc_3160a0b25e7943ad9d44",
+    "new": "doc_b17ad7df7b3d824389be"
+  },
+  {
+    "record_id": "cf_paperpassage_bb2a4742373c685ef189_gemini38_g_independent",
+    "old": "doc_3160a0b25e7943ad9d44",
+    "new": "doc_b17ad7df7b3d824389be"
+  },
+  {
+    "record_id": "cf_paperpassage_0087e60e52c30fdb0289_gemini38_p_light",
+    "old": "doc_e41712a832f040dfb6c0",
+    "new": "doc_8f3db21e159eb62ba189"
+  },
+  {
+    "record_id": "cf_paperpassage_0087e60e52c30fdb0289_gemini38_p_medium",
+    "old": "doc_e41712a832f040dfb6c0",
+    "new": "doc_8f3db21e159eb62ba189"
+  },
+  {
+    "record_id": "cf_paperpassage_0087e60e52c30fdb0289_gemini38_p_heavy",
+    "old": "doc_e41712a832f040dfb6c0",
+    "new": "doc_8f3db21e159eb62ba189"
+  },
+  {
+    "record_id": "cf_paperpassage_0087e60e52c30fdb0289_gemini38_g_independent",
+    "old": "doc_e41712a832f040dfb6c0",
+    "new": "doc_8f3db21e159eb62ba189"
+  },
+  {
+    "record_id": "cf_paperpassage_31d39b93779fd8b1029e_gemini38_p_light",
+    "old": "doc_e7a5059d4e564ca89e24",
+    "new": "doc_5bab7a342e43d2abc33c"
+  },
+  {
+    "record_id": "cf_paperpassage_31d39b93779fd8b1029e_gemini38_p_medium",
+    "old": "doc_e7a5059d4e564ca89e24",
+    "new": "doc_5bab7a342e43d2abc33c"
+  },
+  {
+    "record_id": "cf_paperpassage_31d39b93779fd8b1029e_gemini38_p_heavy",
+    "old": "doc_e7a5059d4e564ca89e24",
+    "new": "doc_5bab7a342e43d2abc33c"
+  },
+  {
+    "record_id": "cf_paperpassage_31d39b93779fd8b1029e_gemini38_g_independent",
+    "old": "doc_e7a5059d4e564ca89e24",
+    "new": "doc_5bab7a342e43d2abc33c"
+  }
+]

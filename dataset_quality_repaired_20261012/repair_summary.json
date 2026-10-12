@@ -1,0 +1,151 @@
+{
+  "source_version": "human_written_dataset_v2_16_paper + ai_counterfactual_dataset_v1",
+  "reason_for_source_choice": "AI source_passage_id values resolve in H v2.16; v2.18 passage IDs do not match, so releases were not mixed.",
+  "raw_counts": {
+    "H": {
+      "records": 21024,
+      "sentences": 162555,
+      "approx_tokens": 4800237
+    },
+    "P": {
+      "records": 792,
+      "sentences": 4386,
+      "approx_tokens": 170167
+    },
+    "G": {
+      "records": 264,
+      "sentences": 1500,
+      "approx_tokens": 70185
+    }
+  },
+  "clean_counts": {
+    "H": {
+      "records": 20997,
+      "sentences": 162369,
+      "approx_tokens": 4793896
+    },
+    "P": {
+      "records": 783,
+      "sentences": 4344,
+      "approx_tokens": 169011
+    },
+    "G": {
+      "records": 264,
+      "sentences": 1500,
+      "approx_tokens": 70185
+    }
+  },
+  "clean_split_counts_by_record": {
+    "train": {
+      "H": 15528,
+      "P": 777,
+      "G": 262
+    },
+    "dev": {
+      "H": 2943,
+      "P": 3,
+      "G": 1
+    },
+    "test": {
+      "H": 2526,
+      "P": 3,
+      "G": 1
+    }
+  },
+  "clean_split_counts_by_sentence": {
+    "train": {
+      "H": 121067,
+      "P": 4320,
+      "G": 1492
+    },
+    "dev": {
+      "H": 22902,
+      "P": 13,
+      "G": 4
+    },
+    "test": {
+      "H": 18400,
+      "P": 11,
+      "G": 4
+    }
+  },
+  "clean_domain_counts_by_record": {
+    "H": {
+      "software_engineering": 8992,
+      "artificial_intelligence": 3670,
+      "information_systems": 3339,
+      "networking": 4015,
+      "cybersecurity": 981
+    },
+    "P": {
+      "software_engineering": 336,
+      "artificial_intelligence": 444,
+      "information_systems": 3
+    },
+    "G": {
+      "software_engineering": 114,
+      "artificial_intelligence": 149,
+      "information_systems": 1
+    }
+  },
+  "human_source_provenance": {
+    "documents_with_metadata": 387,
+    "unique_source_documents": 387,
+    "year_counts": {
+      "1997": 2,
+      "2005": 1,
+      "2006": 1,
+      "2007": 15,
+      "2008": 5,
+      "2009": 26,
+      "2010": 5,
+      "2011": 22,
+      "2012": 27,
+      "2013": 12,
+      "2014": 18,
+      "2015": 11,
+      "2016": 14,
+      "2017": 16,
+      "2018": 14,
+      "2019": 26,
+      "2020": 54,
+      "2021": 62,
+      "2022": 56
+    },
+    "documents_after_2022_cutoff": 0
+  },
+  "training_sentence_class_weights": {
+    "counts": {
+      "H": 121067,
+      "P": 4320,
+      "G": 1492
+    },
+    "weights": {
+      "H": 0.349335,
+      "P": 9.790046,
+      "G": 28.346515
+    }
+  },
+  "counterfactual_generator_models": {
+    "gemini:gemini-3.8-chat-session": 20,
+    "gemini:gemini-3.8-flash": 485,
+    "gemini:gemini-3.6-flash": 542
+  },
+  "repairs": {
+    "p_identical_to_h_removed": 9,
+    "source_document_ids_fixed": 16,
+    "cross_split_duplicate_candidate_h_passages_quarantined": 21,
+    "same_split_exact_duplicate_h_passages_removed": 6,
+    "counterfactual_rows_removed_with_quarantined_or_duplicate_h": 0,
+    "human_provenance_sample_rows": 50,
+    "quality_review_queue_rows": 1047,
+    "contiguous_h_p_hybrid_sequences": 58
+  },
+  "unresolved_or_requires_new_data": [
+    "Semantic similarity and factual consistency need human/semantic-model adjudication; quality_review_queue is a candidate list, not automatic rejection.",
+    "Human authorship, year, and PDF evidence require manual checking of human_provenance_review_sample.",
+    "AI variants cover only a tiny dev/test sample and only Gemini family; valid unseen-generator and robust test sets require more generation and review.",
+    "Generated labels cover only the topics present in existing P/G; networking and cybersecurity need new P/G generation.",
+    "Hybrid output uses aligned contiguous H-to-P-light edits; G remains separate because independent G text cannot be safely spliced sentence-by-sentence without discourse review."
+  ]
+}

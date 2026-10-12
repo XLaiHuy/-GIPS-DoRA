@@ -1,0 +1,14 @@
+{
+  "method": "inverse frequency over training-split sentence counts only",
+  "training_counts_by_label": {
+    "H": 121067,
+    "P": 4320,
+    "G": 1492
+  },
+  "weights": {
+    "H": 0.349335,
+    "P": 9.790046,
+    "G": 28.346515
+  },
+  "warning": "Use as a training loss aid; keep dev/test distributions untouched."
+}
