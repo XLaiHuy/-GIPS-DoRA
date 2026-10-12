@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "training_generator_models": [
+    "gemini::gemini-3.6-flash",
+    "gemini::gemini-3.8-chat-session",
+    "gemini::gemini-3.8-flash"
+  ],
+  "candidate_generator_models": [
+    "gemini::gemini-3.6-flash",
+    "gemini::gemini-3.8-chat-session",
+    "gemini::gemini-3.8-flash"
+  ],
+  "accepted_generator_models": [],
+  "candidate_records": 1047,
+  "accepted_records": 0,
+  "rejected_seen_generator_records": 1047,
+  "accepted_source_passages": 0,
+  "cross_split_accepted_sources": {},
+  "valid": false,
+  "problems": [
+    "No candidate uses a generator/model identity absent from train."
+  ],
+  "protocol": {
+    "purpose": "Final robustness evaluation only",
+    "allowed_uses": [
+      "one-time final reporting",
+      "generator-wise F1 reporting"
+    ],
+    "prohibited_uses": [
+      "threshold selection",
+      "hyperparameter selection",
+      "prompt revision",
+      "training or early stopping"
+    ]
+  }
+}

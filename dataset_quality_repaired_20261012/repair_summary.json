@@ -139,7 +139,7 @@
     "counterfactual_rows_removed_with_quarantined_or_duplicate_h": 0,
     "human_provenance_sample_rows": 50,
     "quality_review_queue_rows": 1047,
-    "contiguous_h_p_hybrid_sequences": 128
+    "contiguous_h_p_hybrid_sequences": 58
   },
   "unresolved_or_requires_new_data": [
     "Semantic similarity and factual consistency need human/semantic-model adjudication; quality_review_queue is a candidate list, not automatic rejection.",

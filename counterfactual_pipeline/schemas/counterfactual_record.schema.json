@@ -60,6 +60,14 @@
     "prompt_hash": {
       "type": ["string", "null"]
     },
+    "prompt_template_version": {
+      "type": "string",
+      "description": "Stable version for the prompt template, independent of passage content"
+    },
+    "prompt_strategy": {
+      "type": "string",
+      "description": "Named generation strategy, for example p_light or g_independent"
+    },
     "approx_tokens": {
       "type": "integer"
     },

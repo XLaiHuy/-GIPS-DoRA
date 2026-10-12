@@ -55,6 +55,12 @@
       "minimum": 0.0,
       "maximum": 1.0
     },
+    "hybrid_recipe": {
+      "type": "string"
+    },
+    "hybrid_quality": {
+      "type": "object"
+    },
     "text": {
       "type": "string"
     },

@@ -16,6 +16,7 @@ WORD_RE = re.compile(r"[\w]+", re.UNICODE)
 NUMBER_RE = re.compile(r"(?<!\w)\d+(?:[.,]\d+)*(?!\w)")
 ENTITY_RE = re.compile(r"\b(?:[A-Z][A-Za-z0-9.+#/-]{1,}|[A-Z]{2,}[0-9A-Z.+#/-]*)\b")
 LABEL_ID = {"H": 0, "P": 1, "G": 2}
+TERMINAL_PUNCTUATION = set(".!?;:")
 
 
 def read_jsonl(path: Path):
@@ -53,19 +54,30 @@ def counts(rows):
 def build_hybrid(parent, human_sentences, polish, source_id):
     original = [s.get("text", "").strip() for s in human_sentences if s.get("text", "").strip()]
     rewritten = [s.get("text", "").strip() for s in polish.get("sentences", []) if s.get("text", "").strip()]
-    if not original or len(original) != len(rewritten):
+    if len(original) < 5 or len(original) != len(rewritten):
         return None
     n = len(original)
     span = min(3, max(1, n // 4))
-    start = max(0, (n - span) // 2)
-    for index in range(start, start + span):
+    start = max(2, (n - span) // 2)
+    start = min(start, n - span - 2)
+    end = start + span
+    if start < 2 or n - end < 2:
+        return None
+    for index in range(start, end):
         left, right = sets(original[index]), sets(rewritten[index])
         similarity = len(left & right) / max(1, len(left | right))
         if similarity < 0.08:
             return None
-    pieces = [(s, "H", i) for i, s in enumerate(original[:start])]
-    pieces.extend((rewritten[i], "P", i) for i in range(start, start + span))
-    pieces.extend((s, "H", i) for i, s in enumerate(original[start + span :], start + span))
+    if original[start - 1][-1] not in TERMINAL_PUNCTUATION:
+        return None
+    if rewritten[end - 1][-1] not in TERMINAL_PUNCTUATION:
+        return None
+
+    window_start = max(0, start - 4)
+    window_end = min(n, end + 4)
+    pieces = [(original[i], "H", i) for i in range(window_start, start)]
+    pieces.extend((rewritten[i], "P", i) for i in range(start, end))
+    pieces.extend((original[i], "H", i) for i in range(end, window_end))
     labels, final_sentences, total_tokens, p_tokens = [], [], 0, 0
     for ordinal, (text, label, source_ordinal) in enumerate(pieces):
         token_count = len(WORD_RE.findall(text))
@@ -106,6 +118,12 @@ def build_hybrid(parent, human_sentences, polish, source_id):
         "text": full_text,
         "sentences": final_sentences,
         "hybrid_recipe": "H_context_with_contiguous_aligned_P_light_span",
+        "hybrid_quality": {
+            "aligned_sentence_ordinals": True,
+            "terminal_punctuation_at_transitions": True,
+            "minimum_h_context_each_side": 2,
+            "maximum_h_context_each_side": 4,
+        },
     }
 
 
@@ -386,7 +404,7 @@ This is a derived copy built from Human v2.16 and the existing counterfactual v1
 
 - `labeled_records.jsonl`: clean H/P/G passage records for downstream loading.
 - `counterfactual_records.jsonl`: cleaned P/G records accepted by the repository validator.
-- `hybrid_sequences.jsonl`: contiguous H-context / P-light-span edits where source and rewrite sentence ordinals align.
+- `hybrid_sequences.jsonl`: contiguous H-context / P-light-span edits with at least two H sentences on both sides and valid punctuation at each transition.
 - `repair_summary.json`: raw and cleaned passage, sentence, token-proxy, split, class, topic, and model counts.
 - `class_weights_sentence_level.json`: inverse-frequency weights calculated from train sentences only.
 - `leakage_review_queue.jsonl`: H passages quarantined because the duplicate scan found a cross-split exact/near-duplicate candidate.
@@ -394,10 +412,18 @@ This is a derived copy built from Human v2.16 and the existing counterfactual v1
 - `human_provenance_review_sample.jsonl`: 50 H samples from distinct documents for source, year, and authorship review.
 - `label_noise_removed.jsonl`, `removed_records.jsonl`, and `fixed_document_ids.json`: repair logs.
 - `audit_report.json`: complete pre-repair audit report.
+- `release_audit.json`: post-repair counts, leakage gates, hybrid gates, and generator-generalization status.
+- `EVALUATION_PROTOCOL.md`: rules that keep test data out of threshold, prompt, and hyperparameter decisions.
+
+## Counting Units
+
+- 21,024 is the raw v2.16 Human passage count.
+- 22,044 is the repaired combined H/P/G record count: 20,997 H, 783 P, and 264 G.
+- Approximate tokens are stored whitespace/token-proxy counts, not counts from a specific model tokenizer.
 
 ## Limits
 
-Lexical overlap and literal-number differences are review signals, not semantic verdicts. The hybrid set contains local H-to-P edits only; independent G passages are kept as standalone counterfactuals because their sentence-level discourse alignment is not established. The generated dev/test sample remains too small for reliable performance claims, all generated records come from the Gemini family, and Networking/Cybersecurity lack P/G variants. Those gaps require additional generation and manual review.
+Lexical overlap and literal-number differences are review signals, not semantic verdicts. The hybrid set contains local H-to-P edits only; independent G passages are kept as standalone counterfactuals because their sentence-level discourse alignment is not established. The generated dev/test sample remains too small for reliable performance claims, all generated records come from the Gemini family, and Networking/Cybersecurity lack P/G variants. An unseen-generator test therefore remains not ready and requires newly generated, manually reviewed records.
 """
     (out / "REPAIR_NOTES.md").write_text(notes, encoding="utf-8")
     print(json.dumps(summary, ensure_ascii=False, indent=2))

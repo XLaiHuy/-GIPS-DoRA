@@ -20,6 +20,7 @@ if str(workspace_root) not in sys.path:
 from counterfactual_pipeline.skeleton_extractor import SemanticSkeletonExtractor
 from counterfactual_pipeline.generator import CounterfactualGenerator
 from counterfactual_pipeline.hybrid_synthesizer import HybridSequenceSynthesizer
+from counterfactual_pipeline.sentence_aligner import segment_sentences
 from counterfactual_pipeline.validate_counterfactuals import validate_counterfactual_dataset
 from counterfactual_pipeline.providers import (
     MockLLMProvider,
@@ -38,7 +39,7 @@ def load_balanced_samples(
     n_dev: int = 5,
     n_test: int = 5
 ) -> List[Dict[str, Any]]:
-    """Sample balanced passages across splits and topic clusters."""
+    """Deterministically round-robin topics within each requested split."""
     samples = []
     split_targets = {"train": n_train, "dev": n_dev, "test": n_test}
 
@@ -49,16 +50,31 @@ def load_balanced_samples(
         if not split_file.exists():
             continue
         
-        count = 0
+        rows_by_topic = {}
         with open(split_file, "r", encoding="utf-8") as f:
             for line in f:
                 if not line.strip():
                     continue
                 row = json.loads(line)
-                samples.append(row)
-                count += 1
-                if count >= target_count:
+                topic = row.get("topic_cluster", "unknown")
+                rows_by_topic.setdefault(topic, []).append(row)
+
+        topic_names = sorted(rows_by_topic)
+        offsets = {topic: 0 for topic in topic_names}
+        while target_count > 0 and topic_names:
+            made_progress = False
+            for topic in topic_names:
+                offset = offsets[topic]
+                if offset >= len(rows_by_topic[topic]):
+                    continue
+                samples.append(rows_by_topic[topic][offset])
+                offsets[topic] += 1
+                target_count -= 1
+                made_progress = True
+                if target_count == 0:
                     break
+            if not made_progress:
+                break
 
     return samples
 
@@ -146,9 +162,10 @@ def main():
 
     # 5. Synthesize Hybrid Sequences if requested
     if args.synthesize_hybrids:
-        print("\n--- Synthesizing Hybrid (H / P / G) Sequences for CRF ---")
+        print("\n--- Synthesizing realistic and auxiliary hybrid sequences ---")
         synthesizer = HybridSequenceSynthesizer(seed=42)
         hybrids_file = args.output_dir / "hybrid_sequences.jsonl"
+        random_aux_file = args.output_dir / "hybrid_sequences_random_aux.jsonl"
         
         # Group generated records by source_passage_id
         records_by_pid = {}
@@ -160,39 +177,57 @@ def main():
                         records_by_pid.setdefault(r["source_passage_id"], []).append(r)
 
         hybrid_count = 0
-        with open(hybrids_file, "w", encoding="utf-8") as h_out:
+        random_aux_count = 0
+        with open(hybrids_file, "w", encoding="utf-8") as h_out, open(
+            random_aux_file, "w", encoding="utf-8"
+        ) as random_out:
             for p in samples:
                 pid = p["passage_id"]
                 cf_list = records_by_pid.get(pid, [])
                 
-                # Extract P and G sentences
+                # The primary hybrid uses only aligned P-light sentences.
                 p_sents = []
                 g_sents = []
                 for rec in cf_list:
-                    if rec["label_type"] == "P":
-                        p_sents.extend(rec["sentences"])
+                    if rec.get("intervention_type") == "p_light":
+                        p_sents = rec["sentences"]
                     elif rec["label_type"] == "G":
                         g_sents.extend(rec["sentences"])
 
                 # Get H sentences from passage text
                 h_sents = [
                     {"sentence_id": f"h_{pid}_{i}", "text": s, "approx_tokens": len(s.split())}
-                    for i, s in enumerate(p["text"].split(". ")) if s.strip()
+                    for i, s in enumerate(segment_sentences(p["text"])) if s.strip()
                 ]
 
                 hybrid = synthesizer.synthesize_hybrid(
                     h_sentences=h_sents,
                     p_sentences=p_sents,
-                    g_sentences=g_sents,
+                    g_sentences=[],
                     source_document_id=p.get("source_document_id", "doc_unknown"),
                     split=p.get("split", "train"),
-                    topic_cluster=p.get("topic_cluster", "software_engineering")
+                    topic_cluster=p.get("topic_cluster", "software_engineering"),
+                    mode="realistic_transition",
                 )
                 if hybrid:
                     h_out.write(json.dumps(hybrid, ensure_ascii=False) + "\n")
                     hybrid_count += 1
 
+                random_aux = synthesizer.synthesize_hybrid(
+                    h_sentences=h_sents,
+                    p_sentences=p_sents,
+                    g_sentences=g_sents,
+                    source_document_id=p.get("source_document_id", "doc_unknown"),
+                    split=p.get("split", "train"),
+                    topic_cluster=p.get("topic_cluster", "software_engineering"),
+                    mode="random_aux",
+                )
+                if random_aux:
+                    random_out.write(json.dumps(random_aux, ensure_ascii=False) + "\n")
+                    random_aux_count += 1
+
         print(f"Synthesized {hybrid_count} hybrid sequences saved to {hybrids_file}.")
+        print(f"Synthesized {random_aux_count} auxiliary random hybrids saved to {random_aux_file}.")
 
     # 6. Run Dataset Validation
     print("\n--- Running Validation Suite ---")

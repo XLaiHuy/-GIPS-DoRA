@@ -15,6 +15,7 @@ Guarantees:
 
 import json
 import logging
+import re
 import time
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Set, Tuple
@@ -22,7 +23,8 @@ from typing import Dict, List, Any, Optional, Set, Tuple
 from counterfactual_pipeline.skeleton_extractor import SemanticSkeletonExtractor
 from counterfactual_pipeline.prompt_templates import (
     build_polish_prompt,
-    build_generation_prompt
+    build_generation_prompt,
+    PROMPT_TEMPLATE_VERSION,
 )
 from counterfactual_pipeline.providers.base import BaseLLMProvider
 from counterfactual_pipeline.sentence_aligner import align_and_package_sentences
@@ -46,8 +48,14 @@ class CounterfactualGenerator:
         self.completed_keys: Set[str] = set()
         self._load_completed_keys()
 
-    def _make_key(self, source_passage_id: str, intervention: str, generator_family: str) -> str:
-        return f"{source_passage_id}::{intervention}::{generator_family}"
+    def _make_key(
+        self,
+        source_passage_id: str,
+        intervention: str,
+        generator_family: str,
+        model_name: str,
+    ) -> str:
+        return f"{source_passage_id}::{intervention}::{generator_family}::{model_name}"
 
     def _load_completed_keys(self):
         if not self.pairs_file.exists():
@@ -61,8 +69,9 @@ class CounterfactualGenerator:
                     pid = rec.get("source_passage_id")
                     interv = rec.get("intervention_type")
                     fam = rec.get("generator_family")
-                    if pid and interv and fam:
-                        self.completed_keys.add(self._make_key(pid, interv, fam))
+                    model = rec.get("model_name")
+                    if pid and interv and fam and model:
+                        self.completed_keys.add(self._make_key(pid, interv, fam, model))
                 except Exception:
                     continue
         logger.info(f"Loaded {len(self.completed_keys)} previously completed counterfactual records.")
@@ -90,11 +99,12 @@ class CounterfactualGenerator:
         results = []
 
         for interv in interventions:
-            key = self._make_key(pid, interv, self.provider.family)
+            key = self._make_key(pid, interv, self.provider.family, self.provider.model_name)
             if key in self.completed_keys:
                 continue
 
-            record_id = f"cf_{pid}_{self.provider.family}_{interv}"
+            model_slug = re.sub(r"[^a-zA-Z0-9]+", "-", self.provider.model_name).strip("-").lower()
+            record_id = f"cf_{pid}_{self.provider.family}_{model_slug}_{interv}"
 
             if interv in ("p_light", "p_medium", "p_heavy"):
                 level = interv.replace("p_", "")
@@ -148,6 +158,8 @@ class CounterfactualGenerator:
                     "max_tokens": 1024
                 },
                 "prompt_hash": p_hash,
+                "prompt_template_version": PROMPT_TEMPLATE_VERSION,
+                "prompt_strategy": interv,
                 "approx_tokens": pkg["approx_tokens"],
                 "sentence_count": pkg["sentence_count"],
                 "text": pkg["text"],

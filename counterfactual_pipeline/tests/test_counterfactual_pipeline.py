@@ -1,7 +1,9 @@
 """Unit tests for the GIPS-DoRA Counterfactual Generation Pipeline."""
 
 import unittest
+import tempfile
 from pathlib import Path
+from counterfactual_pipeline.generator import CounterfactualGenerator
 from counterfactual_pipeline.skeleton_extractor import SemanticSkeletonExtractor
 from counterfactual_pipeline.prompt_templates import (
     build_polish_prompt,
@@ -79,6 +81,25 @@ class TestCounterfactualPipeline(unittest.TestCase):
         res_g = provider.generate("sys", "KHUNG NGỮ NGHĨA (SEMANTIC SKELETON)\nChuyên ngành: AI\nbắt buộc đề cập: Transformer")
         self.assertIn("Transformer", res_g)
 
+    def test_checkpoint_distinguishes_models_within_provider_family(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            extractor = SemanticSkeletonExtractor()
+            first = CounterfactualGenerator(
+                MockLLMProvider(family="mock", model_name="model-a"),
+                extractor,
+                Path(temp_dir),
+            )
+            second_records = first.generate_for_passage(self.sample_passage, ["p_light"])
+            second = CounterfactualGenerator(
+                MockLLMProvider(family="mock", model_name="model-b"),
+                extractor,
+                Path(temp_dir),
+            )
+            third_records = second.generate_for_passage(self.sample_passage, ["p_light"])
+            self.assertEqual(len(second_records), 1)
+            self.assertEqual(len(third_records), 1)
+            self.assertNotEqual(second_records[0]["record_id"], third_records[0]["record_id"])
+
     def test_hybrid_synthesizer(self):
         synthesizer = HybridSequenceSynthesizer(seed=123)
         h_sents = [
@@ -98,7 +119,8 @@ class TestCounterfactualPipeline(unittest.TestCase):
             g_sentences=g_sents,
             source_document_id="doc_test",
             split="train",
-            topic_cluster="artificial_intelligence"
+            topic_cluster="artificial_intelligence",
+            mode="random_aux",
         )
 
         self.assertIsNotNone(hybrid)
@@ -107,6 +129,55 @@ class TestCounterfactualPipeline(unittest.TestCase):
         self.assertIn(1, hybrid["sentence_labels"])
         self.assertTrue(0.0 <= hybrid["r_G"] <= 1.0)
         self.assertTrue(0.0 <= hybrid["r_AI_assisted"] <= 1.0)
+
+    def test_realistic_hybrid_has_two_clean_transitions(self):
+        synthesizer = HybridSequenceSynthesizer(seed=123)
+        h_sents = [
+            {"sentence_id": f"h_{index}", "text": f"Human sentence {index}.", "approx_tokens": 3}
+            for index in range(6)
+        ]
+        p_sents = [
+            {"sentence_id": f"p_{index}", "text": f"Polished sentence {index}.", "approx_tokens": 3}
+            for index in range(6)
+        ]
+        hybrid = synthesizer.synthesize_hybrid(
+            h_sentences=h_sents,
+            p_sentences=p_sents,
+            g_sentences=[],
+            source_document_id="doc_test",
+            split="train",
+            topic_cluster="artificial_intelligence",
+        )
+        self.assertIsNotNone(hybrid)
+        self.assertEqual(hybrid["sentence_labels"][0], 0)
+        self.assertEqual(hybrid["sentence_labels"][-1], 0)
+        transitions = sum(
+            left != right
+            for left, right in zip(hybrid["sentence_labels"], hybrid["sentence_labels"][1:])
+        )
+        self.assertEqual(transitions, 2)
+        self.assertEqual(hybrid["hybrid_recipe"], "h_context_contiguous_p_light_h_context")
+
+    def test_realistic_hybrid_rejects_bad_boundary_punctuation(self):
+        synthesizer = HybridSequenceSynthesizer(seed=123)
+        h_sents = [
+            {"sentence_id": f"h_{index}", "text": f"Human sentence {index}.", "approx_tokens": 3}
+            for index in range(6)
+        ]
+        p_sents = [
+            {"sentence_id": f"p_{index}", "text": f"Polished sentence {index}.", "approx_tokens": 3}
+            for index in range(6)
+        ]
+        p_sents[2]["text"] = "Polished sentence without punctuation"
+        hybrid = synthesizer.synthesize_hybrid(
+            h_sentences=h_sents,
+            p_sentences=p_sents,
+            g_sentences=[],
+            source_document_id="doc_test",
+            split="train",
+            topic_cluster="artificial_intelligence",
+        )
+        self.assertIsNone(hybrid)
 
 
 if __name__ == "__main__":
