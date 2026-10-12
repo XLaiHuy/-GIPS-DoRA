@@ -1,0 +1,553 @@
+{
+  "inputs": {
+    "human_path": "C:\\Users\\LAPTOPZ1\\Downloads\\GIPS-DoRA-Work\\NCKH-Classify_Segmentation_AI_Generated_Text\\NCKH-Classify_Segmentation_AI_Generated_Text\\human_written_dataset_v2_16_paper\\gips_curated\\passages_gips_ready.jsonl",
+    "counterfactual_path": "C:\\Users\\LAPTOPZ1\\Downloads\\GIPS-DoRA-Work\\NCKH-Classify_Segmentation_AI_Generated_Text\\NCKH-Classify_Segmentation_AI_Generated_Text\\ai_counterfactual_dataset_v1\\counterfactual_records.jsonl"
+  },
+  "human_H": {
+    "records": 21024,
+    "sentences": {
+      "total": 162555,
+      "mean": 7.73,
+      "median": 7.0,
+      "min": 2,
+      "max": 44
+    },
+    "approx_tokens": {
+      "total": 4800237,
+      "mean": 228.32,
+      "median": 219.0,
+      "min": 64,
+      "max": 434
+    },
+    "split": {
+      "dev": 2951,
+      "test": 2528,
+      "train": 15545
+    },
+    "topic": {
+      "artificial_intelligence": 3675,
+      "cybersecurity": 981,
+      "information_systems": 3343,
+      "networking": 4018,
+      "software_engineering": 9007
+    }
+  },
+  "counterfactual_P": {
+    "records": 792,
+    "sentences": {
+      "total": 4386,
+      "mean": 5.54,
+      "median": 5.0,
+      "min": 1,
+      "max": 21
+    },
+    "approx_tokens": {
+      "total": 170167,
+      "mean": 214.86,
+      "median": 204.0,
+      "min": 30,
+      "max": 553
+    },
+    "split": {
+      "dev": 3,
+      "test": 3,
+      "train": 786
+    },
+    "topic": {
+      "artificial_intelligence": 447,
+      "information_systems": 3,
+      "software_engineering": 342
+    },
+    "intervention": {
+      "p_heavy": 264,
+      "p_light": 264,
+      "p_medium": 264
+    },
+    "generator": {
+      "gemini / gemini-3.6-flash": 408,
+      "gemini / gemini-3.8-chat-session": 15,
+      "gemini / gemini-3.8-flash": 369
+    }
+  },
+  "counterfactual_G": {
+    "records": 264,
+    "sentences": {
+      "total": 1500,
+      "mean": 5.68,
+      "median": 5.0,
+      "min": 1,
+      "max": 12
+    },
+    "approx_tokens": {
+      "total": 70185,
+      "mean": 265.85,
+      "median": 253.5,
+      "min": 31,
+      "max": 526
+    },
+    "split": {
+      "dev": 1,
+      "test": 1,
+      "train": 262
+    },
+    "topic": {
+      "artificial_intelligence": 149,
+      "information_systems": 1,
+      "software_engineering": 114
+    },
+    "intervention": {
+      "g_independent": 264
+    },
+    "generator": {
+      "gemini / gemini-3.6-flash": 136,
+      "gemini / gemini-3.8-chat-session": 5,
+      "gemini / gemini-3.8-flash": 123
+    }
+  },
+  "counterfactual_total": 1056,
+  "source_split_integrity": {
+    "cf_source_missing_from_human": 0,
+    "cf_split_does_not_match_parent": 0,
+    "cf_source_in_multiple_splits": 0,
+    "cf_document_id_does_not_match_parent": 16,
+    "human_documents_in_multiple_splits": 0,
+    "examples": {
+      "incorrect_cf_split": [],
+      "incorrect_cf_document": [
+        {
+          "record_id": "cf_paperpassage_4ba7dbeb43fe89f78073_gemini38_p_light",
+          "source": "paperpassage_4ba7dbeb43fe89f78073",
+          "expected": "doc_fab311fa85bfdb2e15ae",
+          "actual": "doc_e7a5059d4e564ca89e24"
+        },
+        {
+          "record_id": "cf_paperpassage_4ba7dbeb43fe89f78073_gemini38_p_medium",
+          "source": "paperpassage_4ba7dbeb43fe89f78073",
+          "expected": "doc_fab311fa85bfdb2e15ae",
+          "actual": "doc_e7a5059d4e564ca89e24"
+        },
+        {
+          "record_id": "cf_paperpassage_4ba7dbeb43fe89f78073_gemini38_p_heavy",
+          "source": "paperpassage_4ba7dbeb43fe89f78073",
+          "expected": "doc_fab311fa85bfdb2e15ae",
+          "actual": "doc_e7a5059d4e564ca89e24"
+        },
+        {
+          "record_id": "cf_paperpassage_4ba7dbeb43fe89f78073_gemini38_g_independent",
+          "source": "paperpassage_4ba7dbeb43fe89f78073",
+          "expected": "doc_fab311fa85bfdb2e15ae",
+          "actual": "doc_e7a5059d4e564ca89e24"
+        },
+        {
+          "record_id": "cf_paperpassage_bb2a4742373c685ef189_gemini38_p_light",
+          "source": "paperpassage_bb2a4742373c685ef189",
+          "expected": "doc_b17ad7df7b3d824389be",
+          "actual": "doc_3160a0b25e7943ad9d44"
+        }
+      ],
+      "cross_split_documents": []
+    }
+  },
+  "exact_duplicates": {
+    "all_duplicate_groups": 16,
+    "by_label_composition": {
+      "H + P": 9,
+      "H + H": 7
+    },
+    "cross_split_duplicate_groups": 1,
+    "examples": [
+      {
+        "count": 2,
+        "splits": [
+          "dev",
+          "train"
+        ],
+        "labels": [
+          "H",
+          "H"
+        ],
+        "ids": [
+          "H:paperpassage_fe0032614c3f7d8992e7",
+          "H:paperpassage_12be6ef5fa0aa1a749e8"
+        ]
+      }
+    ]
+  },
+  "near_duplicates": {
+    "method": "4-word-shingle Jaccard, MinHash candidate retrieval",
+    "threshold": 0.8,
+    "candidate_pairs_checked": 89743,
+    "cross_split_pairs": 11,
+    "examples": [
+      {
+        "jaccard_4gram": 1.0,
+        "left": "H:paperpassage_fe0032614c3f7d8992e7",
+        "left_split": "train",
+        "right": "H:paperpassage_12be6ef5fa0aa1a749e8",
+        "right_split": "dev"
+      },
+      {
+        "jaccard_4gram": 0.989,
+        "left": "H:paperpassage_5a351cb466eea1a66a00",
+        "left_split": "train",
+        "right": "H:paperpassage_01baa8efdf1de52d11ad",
+        "right_split": "dev"
+      },
+      {
+        "jaccard_4gram": 0.972,
+        "left": "H:paperpassage_da82dc76ace447e42f74",
+        "left_split": "train",
+        "right": "H:paperpassage_971b4df081ed3da97028",
+        "right_split": "dev"
+      },
+      {
+        "jaccard_4gram": 0.896,
+        "left": "H:paperpassage_12be6ef5fa0aa1a749e8",
+        "left_split": "dev",
+        "right": "H:paperpassage_1a14782a3eb34a30ecf5",
+        "right_split": "train"
+      },
+      {
+        "jaccard_4gram": 0.896,
+        "left": "H:paperpassage_b39d15c9f9f46a7890cd",
+        "left_split": "train",
+        "right": "H:paperpassage_223a29c1ed0e789b29ea",
+        "right_split": "dev"
+      },
+      {
+        "jaccard_4gram": 0.883,
+        "left": "H:paperpassage_676fe0ccd69d282b1c0d",
+        "left_split": "train",
+        "right": "H:paperpassage_67591c5df4071adb587a",
+        "right_split": "dev"
+      },
+      {
+        "jaccard_4gram": 0.879,
+        "left": "H:paperpassage_a0896b3a69824557f3ab",
+        "left_split": "test",
+        "right": "H:paperpassage_ae5dcd1ffe5574d5f7ba",
+        "right_split": "train"
+      },
+      {
+        "jaccard_4gram": 0.86,
+        "left": "H:paperpassage_2438185ea657685c57db",
+        "left_split": "dev",
+        "right": "H:paperpassage_0fca09589cc8d347c562",
+        "right_split": "train"
+      },
+      {
+        "jaccard_4gram": 0.858,
+        "left": "H:paperpassage_7776d2d18e9a8af55a7e",
+        "left_split": "test",
+        "right": "H:paperpassage_b67e9fa4c760cb61c691",
+        "right_split": "train"
+      },
+      {
+        "jaccard_4gram": 0.813,
+        "left": "H:paperpassage_14b18589d4769805a173",
+        "left_split": "dev",
+        "right": "H:paperpassage_a7b554c85eccfa50ae99",
+        "right_split": "train"
+      },
+      {
+        "jaccard_4gram": 0.808,
+        "left": "H:paperpassage_1f58f051d5d45525e51d",
+        "left_split": "train",
+        "right": "H:paperpassage_5a9b9d2fa2bccc2c716e",
+        "right_split": "dev"
+      }
+    ]
+  },
+  "variant_quality_proxies": {
+    "missing_parents": 0,
+    "by_intervention": {
+      "g_independent": {
+        "records": 264,
+        "lexical_jaccard": {
+          "mean": 0.261,
+          "median": 0.264,
+          "min": 0.022,
+          "max": 0.468
+        },
+        "records_missing_source_numbers": 138,
+        "records_with_new_numbers": 9,
+        "examples_new_numbers": [
+          {
+            "id": "cf_paperpassage_ab10d1100dc526c91c74_gemini_g_independent",
+            "source": [
+              "2"
+            ],
+            "output": [
+              "1",
+              "2"
+            ]
+          },
+          {
+            "id": "cf_paperpassage_d6b2ba938c475d8befce_gemini_g_independent",
+            "source": [
+              "1,2"
+            ],
+            "output": [
+              "1"
+            ]
+          },
+          {
+            "id": "cf_paperpassage_be9140d546a6682f64d5_gemini_g_independent",
+            "source": [
+              "000",
+              "100",
+              "3.800",
+              "4.000",
+              "40",
+              "74"
+            ],
+            "output": [
+              "000",
+              "000.000",
+              "100",
+              "3.800",
+              "4.000",
+              "40",
+              "74",
+              "800.000"
+            ]
+          },
+          {
+            "id": "cf_paperpassage_c8b842fe2fe7154f3f37_gemini_g_independent",
+            "source": [
+              "10.000",
+              "9.967"
+            ],
+            "output": [
+              "10.000",
+              "9.967",
+              "99,67"
+            ]
+          },
+          {
+            "id": "cf_paperpassage_4c892c1b830d3ac848ac_gemini_g_independent",
+            "source": [
+              "1",
+              "10",
+              "120",
+              "16",
+              "2",
+              "3,5",
+              "5",
+              "6",
+              "84"
+            ],
+            "output": [
+              "16",
+              "2",
+              "3",
+              "5",
+              "6"
+            ]
+          }
+        ]
+      },
+      "p_heavy": {
+        "records": 264,
+        "lexical_jaccard": {
+          "mean": 0.343,
+          "median": 0.349,
+          "min": 0.077,
+          "max": 0.539
+        },
+        "records_missing_source_numbers": 107,
+        "records_with_new_numbers": 36,
+        "examples_new_numbers": [
+          {
+            "id": "cf_paperpassage_6137bb2117bbbc5f7f6e_gemini_p_heavy",
+            "source": [
+              "2015",
+              "3"
+            ],
+            "output": [
+              "2"
+            ]
+          },
+          {
+            "id": "cf_paperpassage_57a489b0f1c3bb287599_gemini_p_heavy",
+            "source": [
+              "1",
+              "10000",
+              "2",
+              "5"
+            ],
+            "output": [
+              "1",
+              "10.000"
+            ]
+          },
+          {
+            "id": "cf_paperpassage_971eca62af27c775079b_gemini_p_heavy",
+            "source": [
+              "9"
+            ],
+            "output": [
+              "6"
+            ]
+          },
+          {
+            "id": "cf_paperpassage_f2777ec3c6a8837c3dac_gemini_p_heavy",
+            "source": [
+              "5000"
+            ],
+            "output": [
+              "5.000"
+            ]
+          },
+          {
+            "id": "cf_paperpassage_798a5b926bd53ac451ef_gemini_p_heavy",
+            "source": [
+              "5000"
+            ],
+            "output": [
+              "5.000"
+            ]
+          }
+        ]
+      },
+      "p_light": {
+        "records": 264,
+        "lexical_jaccard": {
+          "mean": 0.837,
+          "median": 0.879,
+          "min": 0.129,
+          "max": 1.0
+        },
+        "records_missing_source_numbers": 55,
+        "records_with_new_numbers": 24,
+        "examples_new_numbers": [
+          {
+            "id": "cf_paperpassage_6137bb2117bbbc5f7f6e_gemini_p_light",
+            "source": [
+              "2015",
+              "3"
+            ],
+            "output": [
+              "2"
+            ]
+          },
+          {
+            "id": "cf_paperpassage_06a55b1d65a00321ec6e_gemini_p_light",
+            "source": [
+              "1",
+              "15"
+            ],
+            "output": [
+              "1.5"
+            ]
+          },
+          {
+            "id": "cf_paperpassage_653326182e9ce22b52cc_gemini_p_light",
+            "source": [
+              "160",
+              "2000"
+            ],
+            "output": [
+              "160",
+              "2.000"
+            ]
+          },
+          {
+            "id": "cf_paperpassage_d6b2ba938c475d8befce_gemini_p_light",
+            "source": [
+              "1,2"
+            ],
+            "output": [
+              "1",
+              "2"
+            ]
+          },
+          {
+            "id": "cf_paperpassage_d182968d14308e89b187_gemini_p_light",
+            "source": [
+              "100",
+              "100.000",
+              "1200",
+              "133.000",
+              "15",
+              "1500"
+            ],
+            "output": [
+              "1.200",
+              "1.500",
+              "100",
+              "100.000",
+              "133.000",
+              "15"
+            ]
+          }
+        ]
+      },
+      "p_medium": {
+        "records": 264,
+        "lexical_jaccard": {
+          "mean": 0.543,
+          "median": 0.558,
+          "min": 0.046,
+          "max": 0.859
+        },
+        "records_missing_source_numbers": 92,
+        "records_with_new_numbers": 23,
+        "examples_new_numbers": [
+          {
+            "id": "cf_paperpassage_57a489b0f1c3bb287599_gemini_p_medium",
+            "source": [
+              "1",
+              "10000",
+              "2",
+              "5"
+            ],
+            "output": [
+              "1",
+              "10.000"
+            ]
+          },
+          {
+            "id": "cf_paperpassage_06a55b1d65a00321ec6e_gemini_p_medium",
+            "source": [
+              "1",
+              "15"
+            ],
+            "output": [
+              "1.5"
+            ]
+          },
+          {
+            "id": "cf_paperpassage_f2777ec3c6a8837c3dac_gemini_p_medium",
+            "source": [
+              "5000"
+            ],
+            "output": [
+              "5.000"
+            ]
+          },
+          {
+            "id": "cf_paperpassage_798a5b926bd53ac451ef_gemini_p_medium",
+            "source": [
+              "5000"
+            ],
+            "output": [
+              "5.000"
+            ]
+          },
+          {
+            "id": "cf_paperpassage_653326182e9ce22b52cc_gemini_p_medium",
+            "source": [
+              "160",
+              "2000"
+            ],
+            "output": [
+              "160",
+              "2.000"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
